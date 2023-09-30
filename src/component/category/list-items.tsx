@@ -29,23 +29,23 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItemButton>
-      <ListItemButton onClick={() => navigate("/")}>
+      <ListItemButton onClick={() => navigate("/my-project")}>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
         <ListItemText primary="Projects" />
       </ListItemButton>
-      <ListItemButton onClick={() => navigate("/orders")}>
+      <ListItemButton onClick={() => navigate("/my-invest")}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Invests" />
       </ListItemButton>
-      <ListItemButton onClick={() => navigate("/")}>
+      <ListItemButton onClick={() => navigate("/my-vote")}>
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
-        <ListItemText primary="Reports" />
+        <ListItemText primary="Vote" />
       </ListItemButton>
     </React.Fragment>
   );

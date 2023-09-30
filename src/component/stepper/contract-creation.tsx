@@ -73,7 +73,7 @@ function getStepButton(step: number) {
   }
 }
 
-export default function Contract(props: any) {
+export default function ContractCreation(props: any) {
   const utils: Utils = props.utils;
   const [activeStep, setActiveStep] = React.useState(0);
   const [data, setData] = React.useState({});

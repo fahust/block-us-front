@@ -13,7 +13,7 @@ export async function method(
 ): Promise<ethers.ContractTransactionResponse | bigint> {
   try {
     const contract = await utils.contractInstance(abi, address);
-    const gasLimit = await estimate(contract, functionName, params, "");
+    const gasLimit = await estimate(contract, functionName, params, value);
     if (onlyEstimate === true) return gasLimit;
     const tx = await call(
       contract,

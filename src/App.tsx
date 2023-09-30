@@ -23,8 +23,8 @@ import {
   MainListItems,
   SecondaryListItems,
 } from "./component/category/list-items";
-import Orders from "./component/dashboard/orders";
-import Contract from "./component/stepper/contract";
+import Orders from "./component/dashboard/invests-table";
+import ContractCreation from "./component/stepper/contract-creation";
 import { Route, Routes } from "react-router-dom";
 import Projects from "./component/projects/projects";
 import Project from "./component/project/project";
@@ -33,6 +33,8 @@ import { getUser } from "./api/user-api";
 import { Link } from "@mui/material";
 import News from "./component/news/news";
 import { User } from "./interface/user.interface";
+import MyProject from "./component/my-project/my-project";
+import MyInvest from "./component/my-invests/my-invests";
 
 // const rules: Rules = {
 //   pausable: false,
@@ -207,7 +209,7 @@ function App() {
           <Toolbar />
           <Routes>
             <Route path="/dashboard" element={<Dashboard utils={utils} />} />
-            <Route path="/" element={<Contract utils={utils} />} />
+            <Route path="/contract-creation" element={<ContractCreation utils={utils} />} />
             <Route path="/orders" element={<Orders utils={utils} />} />
             <Route
               path="/game"
@@ -240,6 +242,14 @@ function App() {
             <Route
               path="/gastronomy"
               element={<Projects utils={utils} category={"gastronomy"} />}
+            />
+            <Route
+              path="/my-project"
+              element={<MyProject utils={utils}/>}
+            />
+            <Route
+              path="/my-invest"
+              element={<MyInvest utils={utils}/>}
             />
             <Route path="project/:id" element={<Project utils={utils} />} />
             <Route path="news/:id" element={<News utils={utils} />} />

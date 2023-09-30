@@ -21,7 +21,7 @@ export default function Deposits(props: Props) {
     <React.Fragment>
       <Title>Total</Title>
       <Typography component="p" variant="h4">
-        {`${amount}  Ξ`}
+        {`${props.utils.convertValue(amount)} ${props.utils.convertSymbol(amount)}`}
       </Typography>
       <Typography color="text.secondary" sx={{ flex: 1 }}>
         {new Date(date).toLocaleTimeString("en-us", {

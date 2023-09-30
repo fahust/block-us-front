@@ -15,26 +15,31 @@ interface Props {
   utils: Utils;
 }
 
-export default function Orders(props: Props) {
+export default function InvestsTable(props: Props) {
   const navigate = useNavigate();
 
   return (
     <React.Fragment>
-      <Title>Recent Orders</Title>
+      <Title>Recent investment</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>
             <TableCell>Project</TableCell>
             <TableCell>Hash Transaction</TableCell>
-            <TableCell>Network</TableCell>
             <TableCell align="right">Value</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.utils?.user?.invests?.map((invest: Invest) => (
             <TableRow key={invest.id}>
-              <TableCell>{new Date(invest.created_at).toLocaleTimeString('en-us', { year:"numeric", month:"numeric", day:"numeric"})}</TableCell>
+              <TableCell>
+                {new Date(invest.created_at).toLocaleTimeString("en-us", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })}
+              </TableCell>
               <TableCell>
                 <Button
                   onClick={() => navigate(`/project/${invest?.project?.id}`)}
@@ -43,9 +48,17 @@ export default function Orders(props: Props) {
                   {invest?.project?.title}
                 </Button>
               </TableCell>
-              <TableCell>{invest.hash}</TableCell>
-              <TableCell>{invest.chainId}</TableCell>
-              <TableCell align="right">{`${invest.value} Ξ`}</TableCell>
+              <TableCell>
+                <Button
+                  href={`${props.utils.scanTxByNetwork(invest!.chainId)}${
+                    invest.hash
+                  }`}
+                  target="_blank"
+                >
+                  {invest.hash}
+                </Button>
+              </TableCell>
+              <TableCell align="right">{`${props.utils.convertValue(invest.value)} ${props.utils.convertSymbol(invest.value)}`}</TableCell>
             </TableRow>
           ))}
         </TableBody>

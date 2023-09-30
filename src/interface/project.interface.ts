@@ -1,6 +1,7 @@
 import { Comment } from "./comment.interface";
 import { Invest } from "./invest.interface";
 import { News } from "./news.interface";
+import { User } from "./user.interface";
 import { Vote } from "./vote.interface";
 
 export interface Project {
@@ -31,5 +32,7 @@ export interface Project {
   votes?: Vote[];
   news?: News[] | number;
   comments?: Comment[] | number;
-  likes?: number;
+  likes?: number | User[];
+  liked?: User;
+  owner?: User;
 }

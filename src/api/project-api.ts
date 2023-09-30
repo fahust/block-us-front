@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ethers } from "ethers";
+import { ContractTransactionResponse, ethers } from "ethers";
 import { Rules } from "../interface/rules.interface";
 import Utils from "../helper/utils";
 import { Project } from "../interface/project.interface";
@@ -57,17 +57,21 @@ export async function getProjectByCategory(
   category: string,
   utils: Utils
 ): Promise<Project[] | void> {
-  if (utils.accessJwt) {
-    const { data } = await axiosInstance.get(
-      `http://localhost:3000/project/category/${category}`,
-      {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          authorization: `Bearer ${utils.accessJwt}`,
-        },
-      }
-    );
-    return data;
+  try {
+    if (utils.accessJwt) {
+      const { data } = await axiosInstance.get(
+        `http://localhost:3000/project/category/${category}`,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            authorization: `Bearer ${utils.accessJwt}`,
+          },
+        }
+      );
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -75,16 +79,69 @@ export async function getProject(
   projectId: string,
   utils: Utils
 ): Promise<Project | void> {
-  if (utils.accessJwt) {
-    const { data } = await axiosInstance.get(
-      `http://localhost:3000/project/${projectId}`,
-      {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          authorization: `Bearer ${utils.accessJwt}`,
-        },
-      }
-    );
-    return data;
+  try {
+    if (utils.accessJwt) {
+      const { data } = await axiosInstance.get(
+        `http://localhost:3000/project/${projectId}`,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            authorization: `Bearer ${utils.accessJwt}`,
+          },
+        }
+      );
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function likeProject(
+  projectId: number,
+  utils: Utils
+): Promise<Project | void> {
+  try {
+    if (utils.accessJwt) {
+      const { data } = await axiosInstance.put(
+        `http://localhost:3000/project/like/${projectId}`,
+        {},
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            authorization: `Bearer ${utils.accessJwt}`,
+          },
+        }
+      );
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function withdraw(
+  projectId: number,
+  amount: number,
+  utils: Utils,
+  tx: bigint | ContractTransactionResponse
+): Promise<Project | void> {
+  try {
+    if (utils.accessJwt && typeof tx !== "bigint") {
+      const { chainId } = await utils.provider.getNetwork();
+      const { data } = await axiosInstance.put(
+        `http://localhost:3000/project/withdraw/${projectId}`,
+        { amount, hash: tx.hash, chainId: +chainId.toString() },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            authorization: `Bearer ${utils.accessJwt}`,
+          },
+        }
+      );
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
   }
 }

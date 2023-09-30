@@ -7,7 +7,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import Banner from "./banner";
 import Content from "./content";
 import Sidebar from "./sidebar";
-import { Divider, Typography } from "@mui/material";
+import { Divider, Paper, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import Utils from "../../helper/utils";
 import { getProject } from "../../api/project-api";
@@ -56,20 +56,45 @@ export default function Project(props: Props) {
                     },
                   }}
                 >
-                  <Typography variant="h3" gutterBottom>
-                    {project?.title}
-                  </Typography>
-                  <Divider />
-                  <Typography variant="body1" gutterBottom>
-                    {project?.description}
-                  </Typography>
+                  {/* <Paper elevation={1} sx={{ p: 1 }}> */}
+                    <Typography variant="h3" gutterBottom>
+                      {project?.title}
+                    </Typography>
+                    <Divider />
+                    <Typography variant="body1" gutterBottom>
+                      {project?.description}
+                    </Typography>
+                  {/* </Paper> */}
                 </Grid>
                 <Sidebar
                   title={new Date(project.created_at).toLocaleDateString("en")}
-                  description={project?.shortDescription}
-                  news={project?.news}
-                  // social={sidebar.social}
+                  utils={props.utils}
+                  project={project}
+                  social={null}
                 />
+              </Grid>
+              <Typography variant="h4" gutterBottom>
+                Comments
+              </Typography>
+              <Grid container spacing={5} sx={{ mt: 3 }}>
+                {typeof project?.comments !== "number" &&
+                  project?.comments?.map((comment) => (
+                    <Grid item xs={12} md={12}>
+                      <Paper elevation={5} sx={{ p: 1, bgcolor: "grey.100" }}>
+                        <Typography variant="h5" gutterBottom>
+                          {comment.title}
+                        </Typography>
+                        <Typography variant="body1">
+                          {comment.content}
+                        </Typography>
+                        <Typography variant="caption">
+                          {new Date(comment.created_at).toLocaleDateString(
+                            "en"
+                          )}
+                        </Typography>
+                      </Paper>
+                    </Grid>
+                  ))}
               </Grid>
             </main>
           </Container>

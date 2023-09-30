@@ -6,10 +6,29 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import { useNavigate } from "react-router-dom";
 import { News } from "../../interface/news.interface";
+import { Button } from "@mui/material";
+import { ContractProxy } from "../../helper/contract-proxy";
+import Utils from "../../helper/utils";
+import { Project } from "../../interface/project.interface";
+import { createInvest } from "../../api/invest-api";
+import { ContractTransactionResponse } from "ethers";
+import { withdraw } from "../../api/project-api";
 
-export default function Sidebar(props: any) {
+interface Props {
+  utils: Utils;
+  project: Project;
+  title: string;
+  social: any;
+}
+
+export default function Sidebar(props: Props) {
   const navigate = useNavigate();
-  const { news, description, social, title } = props;
+  const { project, social, title, utils } = props;
+  const news = project.news as News[];
+  const shortDescription = project.shortDescription;
+  const contractProxy = new ContractProxy(utils, project.walletAddressProxy);
+  const [amount, setAmount] = React.useState(1);
+  const [value, setValue] = React.useState(1);
 
   return (
     <Grid item xs={12} md={4}>
@@ -17,7 +36,38 @@ export default function Sidebar(props: any) {
         <Typography variant="h6" gutterBottom>
           {title}
         </Typography>
-        <Typography>{description}</Typography>
+        <Typography>{shortDescription}</Typography>
+        {project?.owner?.id !== utils.user.id ? (
+          <Button
+            onClick={() =>
+              contractProxy
+                .mint(utils.signer.address, amount, value * amount)
+                .then((tx: bigint | ContractTransactionResponse) => {
+                  createInvest(project.id, value * amount, utils, tx);
+                })
+                .catch((err) => console.log(err))
+            }
+            style={{ marginTop: 30 }}
+            variant="contained"
+          >
+            Invest
+          </Button>
+        ) : (
+          <Button
+            onClick={() =>
+              contractProxy
+                .withdraw(amount, utils.signer.address)
+                .then((tx: bigint | ContractTransactionResponse) => {
+                  withdraw(project.id, amount, utils, tx);
+                })
+                .catch((err) => console.log(err))
+            }
+            style={{ marginTop: 30 }}
+            variant="contained"
+          >
+            Withdraw
+          </Button>
+        )}
       </Paper>
       <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
         News

@@ -1,6 +1,6 @@
 import { ethers, formatEther, JsonRpcSigner } from "ethers";
 import axios, { AxiosInstance } from "axios";
-import { ChainIdHexa } from "../enum/network.enum";
+import { ChainId, ChainIdHexa } from "../enum/network.enum";
 import { User } from "../interface/user.interface";
 
 export enum CurrencyEnum {
@@ -19,6 +19,9 @@ declare global {
     ethereum?: any;
   }
 }
+
+const gwei = 1000000000;
+const eth = 1000000000000000000;
 
 /**
  * @category SDK
@@ -284,6 +287,39 @@ class Utils {
 
   async waitTx(tx: any): Promise<void> {
     await tx.wait();
+  }
+
+  scanAddressByNetwork(network: ChainId) {
+    if (network === ChainId.ETHEREUMGOERLI)
+      return "https://goerli.etherscan.io/address/";
+    if (network === ChainId.ETHEREUMMAINNET)
+      return "https://etherscan.io/address/";
+    if (network === ChainId.POLYGONMAINNET)
+      return "https://polygonscan.com/address/";
+    if (network === ChainId.POLYGONMUMBAI)
+      return "https://mumbai.polygonscan.com/address/";
+  }
+
+  scanTxByNetwork(network: ChainId) {
+    if (network === ChainId.ETHEREUMGOERLI)
+      return "https://goerli.etherscan.io/tx/";
+    if (network === ChainId.ETHEREUMMAINNET) return "https://etherscan.io/tx/";
+    if (network === ChainId.POLYGONMAINNET)
+      return "https://polygonscan.com/tx/";
+    if (network === ChainId.POLYGONMUMBAI)
+      return "https://mumbai.polygonscan.com/tx/";
+  }
+
+  convertValue(value: number) {
+    if (value > eth) return Math.floor(value / eth);
+    if (value > gwei) return Math.floor(value / gwei);
+    return value;
+  }
+
+  convertSymbol(value: number) {
+    if (value > eth) return "Eth";
+    if (value > gwei) return "Gwei";
+    return "Wei";
   }
 }
 

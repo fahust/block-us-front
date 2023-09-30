@@ -6,17 +6,15 @@ export const estimate = async (
   args: Array<string | number | boolean | object | Uint8Array>,
   value: string
 ): Promise<bigint> => {
-  let arg: Array<string | number | boolean | object | Uint8Array> = [];
-  if (value !== "" && value && args && args.length > 0) {
-    args?.push({ value });
-    arg = args;
+  let arg: Array<string | number | boolean | object | Uint8Array> = [...args];
+  if (value !== "" && value && args && args.length) {
+    arg.push({ value });
   } else if (value !== "" && value) {
-    arg = [{ value: value }];
-  } else if (args && args.length > 0) {
+    arg = [{ value }];
+  } else if (args && args.length) {
     arg = args;
   }
-  const estimatedGas = await contract[functionName].estimateGas(...arg);
-  return estimatedGas;
+  return contract[functionName].estimateGas(...arg);
 };
 
 export const call = async (
@@ -24,29 +22,25 @@ export const call = async (
   functionName: string,
   args: Array<string | number | boolean | object | Uint8Array>,
   value: string,
-  estimatedGas: string
+  gasLimit: string
 ): Promise<ContractTransactionResponse> => {
-  let arg: Array<string | number | boolean | object | Uint8Array> = [];
-  if (value !== "" && value && args && args.length > 0) {
-    if (estimatedGas !== "0") {
-      args?.push({ value: value, gasLimit: estimatedGas });
+  let arg: Array<string | number | boolean | object | Uint8Array> = [...args];
+  if (value !== "" && value && args && args.length) {
+    if (gasLimit !== "0") {
+      arg?.push({ value, gasLimit });
     } else {
-      args?.push({ value: value });
+      arg?.push({ value });
     }
-    arg = args;
   } else if (value !== "" && value) {
-    if (estimatedGas !== "0") {
-      arg = [{ value: value, gasLimit: estimatedGas }];
+    if (gasLimit !== "0") {
+      arg = [{ value, gasLimit }];
     } else {
-      arg = [{ value: value }];
+      arg = [{ value }];
     }
-  } else if (args && args.length > 0) {
-    if (estimatedGas !== "0") {
-      args?.push({ gasLimit: estimatedGas });
+  } else if (args && args.length) {
+    if (gasLimit !== "0") {
+      arg?.push({ gasLimit });
     }
-    arg = args;
   }
-  const returnedValue = await contract.getFunction(functionName).send(...arg);
-  // const returnedValue = await contract[functionName](...arg);
-  return returnedValue;
+  return contract[functionName](...arg);
 };

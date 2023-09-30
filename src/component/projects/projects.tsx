@@ -13,8 +13,12 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Utils from "../../helper/utils";
-import { getProjectByCategory } from "../../api/project-api";
+import { getProjectByCategory, likeProject } from "../../api/project-api";
 import { Project } from "../../interface/project.interface";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import CommentIcon from "@mui/icons-material/Comment";
+import { User } from "../../interface/user.interface";
 
 interface Props {
   utils: Utils;
@@ -32,6 +36,7 @@ export default function Projects(props: Props) {
       if (data && projects[0]?.title !== data[0]?.title) setProjects(data);
     });
   });
+  console.log(projects);
 
   return (
     <React.Fragment>
@@ -39,7 +44,7 @@ export default function Projects(props: Props) {
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
             <ImageList variant="masonry" cols={3} gap={2}>
-              {projects.map((project: Project) => (
+              {projects.map((project: Project, index: number) => (
                 <Card style={{ margin: 20 }}>
                   <CardActionArea
                     onClick={() => navigate(`/project/${project.id}`)}
@@ -61,13 +66,65 @@ export default function Projects(props: Props) {
                       </Typography>
                     </CardContent>
                   </CardActionArea>
-                  <CardActions>
-                    <Button size="small" color="primary">
-                      Like
-                    </Button>
-                    <Button size="small" color="primary">
-                      Comment
-                    </Button>
+                  <CardActions
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Button>
+                        {project.liked ? (
+                          <ThumbDownIcon
+                          color={"success"}
+                            onClick={() =>
+                              likeProject(project.id, props.utils).then(
+                                (result: Project | void) => {
+                                  projects[index].likes = (
+                                    (result as Project)?.likes as User[]
+                                  ).length;
+                                  projects[index].liked = (
+                                    result as Project
+                                  ).liked;
+                                  setProjects([...projects]);
+                                }
+                              )
+                            }
+                          />
+                        ) : (
+                          <ThumbUpIcon
+                            onClick={() =>
+                              likeProject(project.id, props.utils).then(
+                                (result: Project | void) => {
+                                  projects[index].likes = (
+                                    (result as Project)?.likes as User[]
+                                  ).length;
+                                  projects[index].liked = (
+                                    result as Project
+                                  ).liked;
+                                  setProjects([...projects]);
+                                }
+                              )
+                            }
+                          />
+                        )}
+                      </Button>
+                      <>{project.likes}</>
+                    </div>
+                    <div
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <>{project.comments}</>
+                      <Button>
+                        <CommentIcon />
+                      </Button>
+                    </div>
                   </CardActions>
                 </Card>
               ))}
